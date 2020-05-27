@@ -72,7 +72,7 @@ const fill = async ({ id,
   let output = {
     "entity_type_id": 3,
     "attribute_set_id": 0,
-    "parent_id": 0,
+    "parent_id": parent,
     "created_at": "2018-10-12",
     "updated_at": "2018-10-12",
     "is_active": true,
