@@ -21,8 +21,12 @@ const extractSubcategories = async (parent_id) => {
   let result = await connector().getAsync(`products/categories?parent=${parent_id}`)
   let parsed = JSON.parse(result.toJSON().body)
   let subcats = []
+  let position = 0;
+
   if (parsed.length > 0) {
     for (let child of parsed) {
+
+      position++
 
       let childData = {
         "entity_type_id": 3,
@@ -30,7 +34,7 @@ const extractSubcategories = async (parent_id) => {
         "parent_id": parent_id,
         "created_at": "2018-10-12",
         "updated_at": "2018-10-12",
-        "position": 1,
+        "position": position,
         "level": 2,
         "children_count": 1,
         "available_sort_by": null,
