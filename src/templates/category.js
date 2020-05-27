@@ -16,12 +16,12 @@ const connector = () => {
   })
 }
 
-const extractSubcategories = async (parent_id) => {
+const extractSubcategories = async (parent_id, level = 3) => {
 
   let result = await connector().getAsync(`products/categories?parent=${parent_id}`)
   let parsed = JSON.parse(result.toJSON().body)
   let subcats = []
-  let position = 0;
+  let position = 0
 
   if (parsed.length > 0) {
     for (let child of parsed) {
@@ -41,7 +41,7 @@ const extractSubcategories = async (parent_id) => {
         "include_in_menu": true,
         "name": entities.decode(child.name),
         "id": child.id,
-        "children_data": child.id !== parent_id && await extractSubcategories(child.id),
+        "children_data": child.id !== parent_id && await extractSubcategories(child.id, level + 1),
         "is_anchor": true,
         "is_active": true,
         "path": `1/2/${child.id}`,
@@ -100,7 +100,7 @@ const fill = async ({ id,
     "url_key": slug,
     "url_path": slug,
     "product_count": 10,
-    "children_data": await extractSubcategories(parseInt(id)),
+    "children_data": await extractSubcategories(parseInt(id), level + 1),
   };
 
   output.children_count = output.children_data.length;
