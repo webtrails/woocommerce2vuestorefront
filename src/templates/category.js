@@ -23,12 +23,11 @@ const extractSubcategories = async (parent_id) => {
   let subcats = []
   if (parsed.length > 0) {
     for (let child of parsed) {
-      parsed.parent_id = parsed.parent_id ? parsed.parent_id : 1;
 
       let childData = {
         "entity_type_id": 3,
         "attribute_set_id": 0,
-        "parent_id": parsed.parent_id,
+        "parent_id": parent_id,
         "created_at": "2018-10-12",
         "updated_at": "2018-10-12",
         "position": 1,
