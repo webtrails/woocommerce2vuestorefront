@@ -254,6 +254,7 @@ const fill = async (source, { apiConnector, elasticClient, config, logger }) => 
   }
 
   await appendAttributeOptionsArray(attributes, output, apiConnector(config), logger)
+  await appendAttributeOptions(attributes, output, apiConnector(config), logger)
 
   return output;
 }
