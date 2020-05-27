@@ -69,6 +69,15 @@ const fill = async ({ id,
                     }
                     ) => {
 
+  let include_in_menu = true
+  let level = 2 // A higher level will hide it from the main menu
+  // Check if category is a sub-category
+  if ( parent > 0 ) {
+    // Hide sub category from main menu
+    include_in_menu = false
+    level = 3
+  }
+
   let output = {
     "entity_type_id": 3,
     "attribute_set_id": 0,
@@ -77,10 +86,10 @@ const fill = async ({ id,
     "updated_at": "2018-10-12",
     "is_active": true,
     "position": 1,
-    "level": 3,
+    "level": level,
     "children_count": 1,
     "available_sort_by": null,
-    "include_in_menu": true,
+    "include_in_menu": include_in_menu,
     "name": entities.decode(name),
     "id": id,
     "is_anchor": true,
