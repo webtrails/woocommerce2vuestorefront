@@ -76,7 +76,7 @@ const fill = async (source) => {
     "used_in_product_listing": 0,
     "used_for_sort_by": 0,
     "is_configurable": true,
-    "apply_to": "simple,grouped,configurable",
+    "apply_to": ['simple', 'grouped', 'configurable'],
     "is_visible_in_advanced_search": false,
     "position": 0,
     "is_wysiwyg_enabled": false,
