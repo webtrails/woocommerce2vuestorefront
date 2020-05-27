@@ -62,12 +62,28 @@ const appendAttributeOptions = async (attributes, dataToAppend, apiConnector, lo
       optionTermsCache[attribute.id] = termsDetails
     }
 
-    for (let term of termsDetails) {
-      if (attribute.option === term.name) {
-        logger.info(`appending options... ${attributeDetails.attribute_code.toLowerCase()}: ${term.name}`)
-          dataToAppend[attributeDetails.attribute_code.toLowerCase()] = term.id
-      }
+    dataToAppend[attributeDetails.attribute_code.toLowerCase()] = []
+    let optionsArray = [ attribute.option ];
+    // Woocommerce REST API documentation says that `options` does not exist.
+    // But this guard was left just in case.
+    if ('options' in attribute) {
+      optionsArray = attribute.options;
     }
+
+    for (let term of termsDetails) {
+
+      for (let option of optionsArray) {
+
+        if (option === term.name) {
+          logger.info(`appending options... ${attribute.name.toLowerCase()}: ${term.name}`)
+            
+          dataToAppend[attributeDetails.attribute_code.toLowerCase()].push(term.id)
+        }
+
+      }
+
+    }
+
   }
 
   return dataToAppend
