@@ -21,19 +21,22 @@ const appendAttributeOptionsArray = async (attributes, dataToAppend, apiConnecto
 
   for (let attribute of attributes) {
     let options = []
-    if (attributeOptionsCache[`${attribute.name.toLowerCase()}_options`]) {
+    const attributeDetails = dataToAppend.configurable_options
+      .filter( attr => attr.label == attribute.name )[0]
+
+    if (attributeOptionsCache[`${attributeDetails.attribute_code.toLowerCase()}_options`]) {
       logger.info(`options array found in cache (attribute id ${attribute.id}`)
-      options = attributeOptionsCache[`${attribute.name.toLowerCase()}_options`]
+      options = attributeOptionsCache[`${attributeDetails.attribute_code.toLowerCase()}_options`]
     } else {
       logger.info(`options array not cached (attribute id ${attribute.id}`)
-      dataToAppend[`${attribute.name.toLowerCase()}_options`] = []
+      dataToAppend[`${attributeDetails.attribute_code.toLowerCase()}_options`] = []
       let termsResponse = await apiConnector.getAsync(`products/attributes/${attribute.id}/terms`)
       let response = termsResponse.toJSON().body
       options = JSON.parse(response)
     }
 
     for (let term of options) {
-      dataToAppend[`${attribute.name.toLowerCase()}_options`].push(term.id)
+      dataToAppend[`${attributeDetails.attribute_code.toLowerCase()}_options`].push(term.id)
     }
   }
 
@@ -45,6 +48,9 @@ const appendAttributeOptions = async (attributes, dataToAppend, apiConnector, lo
   logger.info(`appending options... ${dataToAppend.sku}`)
   for (let attribute of attributes) {
     let termsDetails = []
+    const attributeDetails = dataToAppend.configurable_options
+      .filter( attr => attr.label == attribute.name )[0]
+    
     if (optionTermsCache[attribute.id]) {
       logger.info(`attribute options found in cache (attribute id ${attribute.id}`)
       termsDetails = optionTermsCache[attribute.id]
@@ -58,8 +64,8 @@ const appendAttributeOptions = async (attributes, dataToAppend, apiConnector, lo
 
     for (let term of termsDetails) {
       if (attribute.option === term.name) {
-        logger.info(`appending options... ${attribute.name.toLowerCase()}: ${term.name}`)
-          dataToAppend[attribute.name.toLowerCase()] = term.id
+        logger.info(`appending options... ${attributeDetails.attribute_code.toLowerCase()}: ${term.name}`)
+          dataToAppend[attributeDetails.attribute_code.toLowerCase()] = term.id
       }
     }
   }
