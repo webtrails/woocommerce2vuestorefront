@@ -1,8 +1,7 @@
 const config = require('../../config')
 const WooCommerceAPI = require('woocommerce-api');
-const attributeTemplate = require('../templates/attribute')
+const tagsTemplate = require('../templates/tag')
 const sendToElastic = require('../common/sendToElastic')
-const Throttle = require('promise-parallel-throttle')
 
 const connector = () => {
   let { host, protocol } = config.woo.api;
