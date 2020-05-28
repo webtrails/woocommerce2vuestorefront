@@ -23,8 +23,8 @@ const importer = ({ config, elasticClient, apiConnector, logger }) => {
       let tags = JSON.parse(body)
       
       const tagsAsAttributeOptions = tags.map( tag => ({
-        id: tag.id,
-        name: tag.name
+        value: tag.id,
+        label: tag.name
       }))
 
       const attribute = tagsTemplate.fill(tagsAsAttributeOptions)
