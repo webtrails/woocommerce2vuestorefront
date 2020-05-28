@@ -28,7 +28,7 @@ const connector = () => {
 }
 
 program.command('tags').option('-p, --page', 'current page').option('-P, --pages', 'pages')
-  .action(cmd => { tagsImporter.importer({ config: config, elasticClient: client, apiConnector: connector, logger }).importAttributes() })
+  .action(cmd => { tagsImporter.importer({ config: config, elasticClient: client, apiConnector: connector, logger }).importTags() })
 
 program.command('attributes').option('-p, --page', 'current page').option('-P, --pages', 'pages')
   .action(cmd => { attributeImporter.importer({ config: config, elasticClient: client, apiConnector: connector, logger }).importAttributes() })
