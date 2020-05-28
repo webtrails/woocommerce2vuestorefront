@@ -69,7 +69,8 @@ In `db` section contained in `config.js` file you should adjust some info about 
 Please execute indexers one by one with:
 1. attributes: `nodejs cli.js attributes` 
 2. categories: `nodejs cli.js categories`
-3. products: `nodejs cli.js products`
+3. tags: `nodejs cli.js tags`
+4. products: `nodejs cli.js products`
 
 and that's it. 
 
