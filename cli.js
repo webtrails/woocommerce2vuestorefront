@@ -6,6 +6,7 @@ const logger = require('./src/common/logger')
 const productImporter = require('./src/importer/products')
 const categoryImporter = require('./src/importer/categories')
 const attributeImporter = require('./src/importer/attributes')
+const tagsImporter = require('./src/importer/tags')
 const WooCommerceAPI = require('woocommerce-api');
 const elasticsearch = require('elasticsearch')
 
@@ -25,6 +26,9 @@ const connector = () => {
     version: 'wc/v1'
   })
 }
+
+program.command('tags').option('-p, --page', 'current page').option('-P, --pages', 'pages')
+  .action(cmd => { tagsImporter.importer({ config: config, elasticClient: client, apiConnector: connector, logger }).importAttributes() })
 
 program.command('attributes').option('-p, --page', 'current page').option('-P, --pages', 'pages')
   .action(cmd => { attributeImporter.importer({ config: config, elasticClient: client, apiConnector: connector, logger }).importAttributes() })
