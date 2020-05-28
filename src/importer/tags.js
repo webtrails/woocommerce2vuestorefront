@@ -18,29 +18,27 @@ const connector = () => {
 
 const importer = ({ config, elasticClient, apiConnector, logger }) => {
 
-  connector().getAsync('products/attributes?per_page=100').then(
+  connector().getAsync('tags?per_page=100').then(
     (result) => {
       let body = result.toJSON().body
-      let attributes = JSON.parse(body)
-      const convertingQueue = attributes.map(attribute => () => attributeTemplate.fill(attribute))
+      let tags = JSON.parse(body)
+      
+      const tagsAsAttributeOptions = tags.map( tag => ({
+        id: tag.id,
+        name: tag.name
+      }));
 
-      Throttle.all(convertingQueue).then(convertedAttributes => {
-          const sendingQueue = convertedAttributes.map(attribute => () => sendToElastic(attribute, 'attribute', {config, elasticClient, logger}))
+      const attribute = tagsTemplate.fill(tagsAsAttributeOptions)
+      await sendToElastic(attribute, 'attribute', {config, elasticClient, logger}
 
-          Throttle.all(sendingQueue).then(result => {
-            logger.info(result)
-            logger.info(`${result.filter(success => success).length} attributes were successfully imported`)
-          })
-        }
-      )
     }).catch(error => logger.info(error))
 
-  function importAttributes() {
-    logger.info('attributes are being imported...')
+  function importtags() {
+    logger.info('tags are being imported...')
   }
 
   return {
-    importAttributes
+    importtags
   }
 }
 
