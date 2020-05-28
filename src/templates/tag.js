@@ -1,5 +1,5 @@
 
-const fill = async (options) => {
+const fill = (options) => {
 
   const id = Date.now()
 
