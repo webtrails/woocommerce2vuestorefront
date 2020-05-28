@@ -16,34 +16,39 @@ const connector = () => {
   })
 }
 
-const extractSubcategories = async (parent_id) => {
+const extractSubcategories = async (parent_id, level = 3) => {
 
   let result = await connector().getAsync(`products/categories?parent=${parent_id}`)
   let parsed = JSON.parse(result.toJSON().body)
   let subcats = []
+  let position = 0
+
   if (parsed.length > 0) {
     for (let child of parsed) {
-      parsed.parent_id = parsed.parent_id ? parsed.parent_id : 1;
+
+      position++
 
       let childData = {
         "entity_type_id": 3,
         "attribute_set_id": 0,
-        "parent_id": parsed.parent_id,
+        "parent_id": parent_id,
         "created_at": "2018-10-12",
         "updated_at": "2018-10-12",
-        "position": 1,
+        "position": position,
         "level": 2,
         "children_count": 1,
         "available_sort_by": null,
         "include_in_menu": true,
         "name": entities.decode(child.name),
+        "slug": child.slug,
         "id": child.id,
-        "children_data": child.id !== parent_id && await extractSubcategories(child.id),
+        "children_data": child.id !== parent_id && await extractSubcategories(child.id, level + 1),
         "is_anchor": true,
         "is_active": true,
-        "path": `1/2/${child.id}`,
+        "slug": child.slug,
+        "path": child.slug,
         "url_key":  child.slug,
-        "url_path":  child.id,
+        "url_path":  child.slug,
         "product_count": 10,
       }
 
@@ -69,26 +74,36 @@ const fill = async ({ id,
                     }
                     ) => {
 
+  let include_in_menu = true
+  let level = 2 // A higher level will hide it from the main menu
+  // Check if category is a sub-category
+  if ( parent > 0 ) {
+    // Hide sub category from main menu
+    include_in_menu = false
+    level = 3
+  }
+
   let output = {
     "entity_type_id": 3,
     "attribute_set_id": 0,
-    "parent_id": 0,
+    "parent_id": parent,
     "created_at": "2018-10-12",
     "updated_at": "2018-10-12",
     "is_active": true,
     "position": 1,
-    "level": 2,
+    "level": level,
     "children_count": 1,
     "available_sort_by": null,
-    "include_in_menu": true,
+    "include_in_menu": include_in_menu,
     "name": entities.decode(name),
     "id": id,
     "is_anchor": true,
-    "path": `1/${id}`,
+    "slug": slug,
+    "path": slug,
     "url_key": slug,
     "url_path": slug,
     "product_count": 10,
-    "children_data": await extractSubcategories(parseInt(id)),
+    "children_data": await extractSubcategories(parseInt(id), level + 1),
   };
 
   output.children_count = output.children_data.length;

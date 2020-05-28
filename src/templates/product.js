@@ -7,7 +7,9 @@ const extractCategories = (categories) => {
 
   for (let category of categories) {
     output.push({
-      category_id: category.id
+      category_id: category.id,
+      name: category.name,
+      slug: category.slug
     })
   }
 

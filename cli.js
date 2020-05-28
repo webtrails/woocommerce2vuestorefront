@@ -35,7 +35,9 @@ program.command('products')
   .action((cmd) => { productImporter.importer({ config: config, elasticClient: client, apiConnector: connector, logger: logger, page: cmd.page, perPage: cmd.perPage}).importProducts() })
 
 program.command('categories')
-  .action(cmd => { categoryImporter.importer({ config: config, elasticClient: client, apiConnector: connector, logger }).importCategories() })
+  .option('--perPage <n>', 'per page', parseInt)
+  .option('--page <n>', 'current page', parseInt)
+  .action(cmd => { categoryImporter.importer({ config: config, elasticClient: client, apiConnector: connector, logger, page: cmd.page, perPage: cmd.perPage }).importCategories() })
 
 program
   .on('command:*', () => {
