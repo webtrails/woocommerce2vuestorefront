@@ -45,6 +45,7 @@ const extractSubcategories = async (parent_id, level = 3) => {
         "children_data": child.id !== parent_id && await extractSubcategories(child.id, level + 1),
         "is_anchor": true,
         "is_active": true,
+        "slug": child.slug,
         "path": child.slug,
         "url_key":  child.slug,
         "url_path":  child.slug,
