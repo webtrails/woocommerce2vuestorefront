@@ -32,12 +32,12 @@ const importer = ({ config, elasticClient, apiConnector, logger }) => {
 
     }).catch(error => logger.info(error))
 
-  function importtags() {
+  function importTags() {
     logger.info('tags are being imported...')
   }
 
   return {
-    importtags
+    importTags
   }
 }
 
