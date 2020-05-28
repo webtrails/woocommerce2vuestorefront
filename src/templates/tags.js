@@ -1,22 +1,18 @@
 
-const fill = async (source) => {
-  let {
-    id,
-    name,
-    slug,
-    type
-  } = source
+const fill = async (options) => {
+
+  const id = Date.now()
 
   let output =  {
     "entity_type_id": 4,
-    "attribute_code": slug,
+    "attribute_code": 'tags',
     "attribute_model": null,
     "backend_model": null,
     "backend_type": "int",
     "backend_table": null,
     "frontend_model": null,
-    "frontend_input": type,
-    "frontend_label": name,
+    "frontend_input": 'select',
+    "frontend_label": 'tags',
     "frontend_class": null,
     "source_model": "eav/entity_attribute_source_table",
     "is_required": false,
@@ -45,7 +41,7 @@ const fill = async (source) => {
     "is_used_for_promo_rules": false,
     "search_weight": 1,
     "id": id,
-    "options": await extractOptions(id)
+    "options": options
   }
 
   return output
