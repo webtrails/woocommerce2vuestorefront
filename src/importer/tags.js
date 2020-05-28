@@ -25,10 +25,10 @@ const importer = ({ config, elasticClient, apiConnector, logger }) => {
       const tagsAsAttributeOptions = tags.map( tag => ({
         id: tag.id,
         name: tag.name
-      }));
+      }))
 
       const attribute = tagsTemplate.fill(tagsAsAttributeOptions)
-      await sendToElastic(attribute, 'attribute', {config, elasticClient, logger}
+      sendToElastic(attribute, 'attribute', {config, elasticClient, logger})
 
     }).catch(error => logger.info(error))
 
