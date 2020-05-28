@@ -17,7 +17,7 @@ const connector = () => {
 
 const importer = ({ config, elasticClient, apiConnector, logger }) => {
 
-  connector().getAsync('tags?per_page=100').then(
+  connector().getAsync('products/tags?per_page=100').then(
     (result) => {
       let body = result.toJSON().body
       let tags = JSON.parse(body)
