@@ -2,6 +2,8 @@ const attributeCache = []
 const attributeOptionsCache = []
 const optionTermsCache = []
 
+const categoriesCache = {}
+
 const extractCategories = (categories) => {
   let output = []
 
@@ -88,6 +90,82 @@ const appendAttributeOptions = async (attributes, dataToAppend, apiConnector, lo
   }
 
   return dataToAppend
+}
+
+/**
+ * Fetch category from Woocommerce REST API by id.
+ * 
+ * @param string category_id
+ * @returns object
+ */
+const fetchCategoryData = async (category_id, connector) => {
+  const result = await connector.getAsync(`products/categories/${category_id}`)
+  const parsed = JSON.parse(result.toJSON().body)
+
+  return 'id' in parsed ? parsed : {}
+
+}
+
+/**
+ * Fetches all parent categories
+ * 
+ * @param object category
+ * @returns array
+ */
+const getParentCategories = async (category_id, connector) => {
+  // Fetch parent category data
+  let categories = []
+  const category = category_id in categoriesCache
+    ? categoriesCache[ category_id ]
+    : await fetchCategoryData( category_id, connector )
+  // If parent category exists
+  // If this isn't true the database data might be corrupted
+  if ( Object.keys(category).length > 0 ) {
+    categories.push(category)
+    categoriesCache[ category_id ] = category
+  }
+  // Get the parent categories
+  const parentCategories = 'parent' in category && category.parent > 0
+    ? await getParentCategories( category.parent, connector ) : {}
+  
+  if ( parentCategories.length > 0 ) {
+    categories = categories.concat(parentCategories);
+  }
+  
+  return categories;
+
+}
+
+/**
+ * Fetches and returns all the categories.
+ * 
+ * @param array categories 
+ * @param apiConnector connector 
+ */
+const getAllCategories = async (categories, connector) => {
+
+  let storedCategories = []
+  let uniqueCategories = []
+  let uniqueCategoriesIds = {} // This is used to remove duplicates
+
+  for (let category of categories) {
+    const getCategories = await getParentCategories( category.id, connector )
+    
+    if ( getCategories.length > 0 ) {
+      storedCategories = storedCategories.concat(getCategories)
+    }
+
+  }
+  // Remove duplicates
+  storedCategories.forEach( category => {
+    if ( !( category.id in uniqueCategoriesIds ) ) {
+      uniqueCategories.push(category)
+      uniqueCategoriesIds[ category.id ] = null
+    }
+  });
+
+  return uniqueCategories
+
 }
 
 const extractConfigurableChildren = async (productId, variations, apiConnector, logger) => {
@@ -178,6 +256,9 @@ const fill = async (source, { apiConnector, elasticClient, config, logger }) => 
     variations,
     timestamp
   } = source
+
+  // Fetch the parent and sub categories that the product has
+  categories = await getAllCategories(categories, apiConnector(config));
 
   let output = {
     "timestamp": timestamp,

@@ -39,7 +39,6 @@ const importer = ({ config, elasticClient, apiConnector, logger, page = 1, perPa
       let body = chunk.toJSON().body
       let products = JSON.parse(body)
       if (!Array.isArray(products) || products.length===0) {
-        console.log(products)
         logger.info(`There are no products on page ${page}`)
         return;
       }
