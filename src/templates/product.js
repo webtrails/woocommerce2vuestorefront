@@ -230,6 +230,14 @@ const extractConfigurableOptions = async (attributes, apiConnector, logger) => {
   return output
 }
 
+const appendTagsAsAttribute = (tags, output) => {
+
+  const tagsIds = tags.map( tag => tag.id)
+  output.tags = tagsIds
+  output.tags_options = tagsIds
+
+}
+
 
 const fill = async (source, { apiConnector, elasticClient, config, logger }) => {
   logger.info(`-------------------------------------------\nStarted processing parent product ${source.id} with sku ${source.sku}`)
@@ -254,7 +262,8 @@ const fill = async (source, { apiConnector, elasticClient, config, logger }) => 
     grouped_products,
     categories,
     variations,
-    timestamp
+    timestamp,
+    tags
   } = source
 
   // Fetch the parent and sub categories that the product has
@@ -337,6 +346,7 @@ const fill = async (source, { apiConnector, elasticClient, config, logger }) => 
 
   await appendAttributeOptionsArray(attributes, output, apiConnector(config), logger)
   await appendAttributeOptions(attributes, output, apiConnector(config), logger)
+  appendTagsAsAttribute(tags, output)
 
   return output;
 }
